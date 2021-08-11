@@ -12,7 +12,7 @@ class TodoForm extends React.Component {
 
     this.inputValue = this.inputValue.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    //this.deleteItem = this.deleteItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
 
     // this.
   }
@@ -30,43 +30,19 @@ class TodoForm extends React.Component {
     });
   }
 
-  // deleteItem(itemTobeDeleted) {
-  //   const todosArray = [...this.state.items];
-  //   todosArray.splice(itemTobeDeleted, 1);
-  //   this.setState({ item: todosArray });
-  // }
-
-  // deleteItem(item) {
-  //   const delitem = [...this.state.toDoItems];
-  //   let index = delitem.map((element) => element.name).indexOf(item);
-  //   delitem.splice(index, 1);
-  //   this.setState({ toDoItems: delitem });
-  // }
-  // deleteItem(itemTobeDeleted, event) {
-  //   const filteredItem = this.state.items.filter((item) => {
-  //     return item !== itemTobeDeleted;
-  //   });
-  //   this.setState({
-  //     items: filteredItem,
-  //   });
-  //   //   // this.setState({
-  //   //   items: this.state.items.filter((item) => item !== itemTobeDeleted),
-  //   // });
-  // }
-  //
-  deleteItem = (itemTobeDeleted) => (event) => {
-    // console.log("itemTobeDeleted:", itemTobeDeleted);
+  deleteItem(itemTobeDeleted) {
+    console.log("call");
     const filteredItem = this.state.items.filter((item) => {
       return item !== itemTobeDeleted;
     });
     this.setState({
       items: filteredItem,
     });
-  };
+  }
 
   render() {
-    console.log(this.deleteItem);
-    console.log(this.state.items);
+    //console.log(this.deleteItem);
+    //console.log(this.state.items);
     return (
       <div>
         <form className="todo-form" onSubmit={this.onSubmit}>
@@ -82,10 +58,7 @@ class TodoForm extends React.Component {
           <button className="todo-button">Add Item</button>
         </form>
 
-        <ListItems
-          items={this.state.items}
-          delete={(item) => this.deleteItem(item)}
-        />
+        <ListItems items={this.state.items} delete={this.deleteItem} />
       </div>
     );
   }
