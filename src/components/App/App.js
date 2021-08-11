@@ -1,6 +1,5 @@
 import "./App.css";
-import TodoForm from "./components/TodoForm";
-
+import TodoForm from "../TodoForm";
 import React, { Component } from "react";
 
 export default class App extends Component {

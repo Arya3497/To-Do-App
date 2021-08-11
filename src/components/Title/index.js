@@ -1,5 +1,6 @@
 import React from "react";
-import TodoForm from "./TodoForm";
+import TodoForm from "../TodoForm";
+
 import React, { Component } from "react";
 
 export default class Title extends Component {

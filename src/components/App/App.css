@@ -7,7 +7,7 @@
 }
 
 body {
-  background-image: url(/Users/aryayadav/todoapp/src/1.jpg);
+  background-image: url(/Users/aryayadav/todoapp/src/Assets/1.jpg);
 }
 .todo-app {
   display: flex;
