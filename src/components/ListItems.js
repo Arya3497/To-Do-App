@@ -36,9 +36,9 @@ const ListItems = (props) => (
     <ul>
       {props.items.map((item, index) => {
         return (
-          <div className="todo-row">
+          <div key={index} className="todo-row">
             <li key={index}> {item}</li>
-            <button className="todo-button1" onClick={props.delete(item)}>
+            <button className="todo-button1" onClick={() => props.delete(item)}>
               Delete
             </button>
           </div>
@@ -47,5 +47,3 @@ const ListItems = (props) => (
     </ul>
   </div>
 );
-
-export default ListItems;
