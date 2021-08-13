@@ -1,6 +1,6 @@
 import React from "react";
-//import ListItems from "./ListItems";
 import ListItems from "../ListItems";
+import firebase from "../Firebase/firebase_config";
 
 class TodoForm extends React.Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class TodoForm extends React.Component {
       value: "",
       items: [],
       id: 0,
+      isloading: true,
     };
 
     this.inputValue = this.inputValue.bind(this);
@@ -18,22 +19,52 @@ class TodoForm extends React.Component {
     // this.
   }
 
+  componentDidMount() {
+    const db = firebase.firestore();
+
+    let temp = [];
+    db.collection("todo")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          temp.push(doc.data().name);
+        });
+        this.setState({
+          items: temp,
+          isloading: false,
+        });
+      });
+  }
   inputValue(e) {
     this.setState({ value: e.target.value });
+  }
+  adTodo(value) {
+    const db = firebase.firestore();
+    db.collection("todo").add({
+      name: value,
+    });
   }
 
   onSubmit(e) {
     e.preventDefault();
+    this.adTodo(this.state.value);
+
+    const a = [...this.state.items];
+    a.push(this.state.value);
+
     this.setState({
       value: "",
+
       id: this.state.id + 1,
-      items: [...this.state.items, this.state.value],
+      items: a,
     });
+
+    console.log(this.state.items);
   }
 
   deleteItem(itemTobeDeleted) {
     console.log("call");
-    const filteredItem = this.state.items.filter((item) => {
+    const filteredItem = this.state.items.filter(function (item) {
       return item !== itemTobeDeleted;
     });
     this.setState({
@@ -44,10 +75,12 @@ class TodoForm extends React.Component {
   render() {
     //console.log(this.deleteItem);
     //console.log(this.state.items);
+    const isLoggedIn = this.state.isloading;
     return (
       <div>
         <form className="todo-form" onSubmit={this.onSubmit}>
           <h1> What's the Plan for today</h1>
+
           <input
             type="text"
             placeholder="Add a todo"
@@ -58,8 +91,11 @@ class TodoForm extends React.Component {
 
           <button className="todo-button">Add Item</button>
         </form>
-
-        <ListItems items={this.state.items} delete={this.deleteItem} />
+        {isLoggedIn ? (
+          <div>Loading</div>
+        ) : (
+          <ListItems items={this.state.items} delete={this.deleteItem} />
+        )}
       </div>
     );
   }

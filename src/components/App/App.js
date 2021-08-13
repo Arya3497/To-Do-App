@@ -1,6 +1,7 @@
 import "./App.css";
 import TodoForm from "../TodoForm";
 import React, { Component } from "react";
+import firebase from "firebase";
 
 export default class App extends Component {
   constructor(props) {
@@ -8,8 +9,10 @@ export default class App extends Component {
     this.state = {
       id: null,
       value: "",
+      items: [],
     };
   }
+
   render() {
     return (
       <div className="todo-app">
