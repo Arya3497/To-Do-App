@@ -1,7 +1,9 @@
 import React from "react";
 import ListItems from "../ListItems";
 import firebase from "../Firebase/firebase_config";
-
+import { connect } from "react-redux";
+import { addTodo } from "../../redux/action/addTodo";
+import { deleteTodo } from "../../redux/action/deleteTodo";
 class TodoForm extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +50,7 @@ class TodoForm extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     this.adTodo(this.state.value);
-
+    this.props.addTodo(this.state.value);
     const a = [...this.state.items];
     a.push(this.state.value);
 
@@ -70,6 +72,7 @@ class TodoForm extends React.Component {
     this.setState({
       items: filteredItem,
     });
+    this.props.deleteTodo(filteredItem);
   }
 
   render() {
@@ -92,7 +95,7 @@ class TodoForm extends React.Component {
           <button className="todo-button">Add Item</button>
         </form>
         {isLoggedIn ? (
-          <div>Loading</div>
+          <div>Loading...</div>
         ) : (
           <ListItems items={this.state.items} delete={this.deleteItem} />
         )}
@@ -101,4 +104,8 @@ class TodoForm extends React.Component {
   }
 }
 
-export default TodoForm;
+const mapDispatchToProps = (dispatch) => ({
+  addTodo: (value) => dispatch(addTodo(value)),
+  deleteTodo: (key) => dispatch(deleteTodo(key)),
+});
+export default connect(null, mapDispatchToProps)(TodoForm);

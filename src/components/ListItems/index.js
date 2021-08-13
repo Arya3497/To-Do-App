@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+//import { connect } from "react-redux";
+//import { deleteTodo } from "../../redux/action/deleteTodo";
 export default class ListItems extends Component {
   render() {
     return (
@@ -22,3 +24,8 @@ export default class ListItems extends Component {
     );
   }
 }
+/*const mapStateToProps = (dispatch) => ({
+  deleteTodo: (index) => dispatch(deleteTodo(index)),
+});
+
+export default connect(null, mapDispatchToProps)(ListItems);*/
