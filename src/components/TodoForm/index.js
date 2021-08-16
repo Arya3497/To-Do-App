@@ -24,11 +24,15 @@ class TodoForm extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.setState({
-      value: "",
-      id: this.state.id + 1,
-      items: [...this.state.items, this.state.value],
-    });
+    if (!this.state.value) {
+      alert("Input Field cannot be empty!!!");
+    } else {
+      this.setState({
+        value: "",
+        id: this.state.id + 1,
+        items: [...this.state.items, this.state.value],
+      });
+    }
   }
 
   deleteItem(itemTobeDeleted) {
@@ -56,7 +60,7 @@ class TodoForm extends React.Component {
             onChange={this.inputValue}
           />
 
-          <button className="todo-button">Add Item</button>
+          <button className="todo-button">Add Todo</button>
         </form>
 
         <ListItems items={this.state.items} delete={this.deleteItem} />
