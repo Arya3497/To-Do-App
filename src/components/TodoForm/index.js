@@ -1,24 +1,20 @@
 import React from "react";
 import ListItems from "../ListItems";
-import firebase from "../Firebase/firebase_config";
+import firebase from "../../Firebase/firebase_config";
 import { connect } from "react-redux";
-import { addTodo } from "../../redux/action/addTodo";
-import { deleteTodo } from "../../redux/action/deleteTodo";
+import {
+  addTodo,
+  deleteTodo,
+  inputvalue,
+  Firestore_data,
+} from "../../redux/action/action_todo";
 class TodoForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: "",
-      items: [],
-      id: 0,
-      isloading: true,
-    };
 
     this.inputValue = this.inputValue.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
-
-    // this.
   }
 
   componentDidMount() {
@@ -31,54 +27,53 @@ class TodoForm extends React.Component {
         querySnapshot.forEach((doc) => {
           temp.push(doc.data().name);
         });
-        this.setState({
-          items: temp,
-          isloading: false,
-        });
       });
+    this.props.Firestore_data(temp);
   }
+
   inputValue(e) {
-    this.setState({ value: e.target.value });
+    this.props.inputvalue(e.target.value);
   }
+
   adTodo(value) {
     const db = firebase.firestore();
     db.collection("todo").add({
+      ID: this.props.id + 1,
       name: value,
     });
   }
 
   onSubmit(e) {
     e.preventDefault();
-    this.adTodo(this.state.value);
-    this.props.addTodo(this.state.value);
-    const a = [...this.state.items];
-    a.push(this.state.value);
-
-    this.setState({
-      value: "",
-
-      id: this.state.id + 1,
-      items: a,
-    });
-
-    console.log(this.state.items);
+    //console.log("item", this.props.value);
+    this.adTodo(this.props.value);
+    this.props.addTodo(this.props.value);
   }
 
   deleteItem(itemTobeDeleted) {
-    console.log("call");
-    const filteredItem = this.state.items.filter(function (item) {
-      return item !== itemTobeDeleted;
+    console.log("call", itemTobeDeleted);
+    const filteredItem = this.props.todos.filter(function (item) {
+      return item.todo !== itemTobeDeleted;
     });
     // this.setState({
     //   items: filteredItem,
     // });
+    console.log("dhkhsdkhksdk", filteredItem);
     this.props.deleteTodo(filteredItem);
   }
 
   render() {
-    //console.log(this.deleteItem);
-    //console.log(this.state.items);
-    const isLoggedIn = this.state.isloading;
+    const {
+      value,
+      id,
+      isloading,
+      todos,
+      onSubmit,
+      deleteItem,
+      inputValue,
+      Firestore_data,
+    } = this.props;
+    const isLoggedIn = this.props.isloading;
     return (
       <div>
         <form className="todo-form" onSubmit={this.onSubmit}>
@@ -88,7 +83,7 @@ class TodoForm extends React.Component {
             type="text"
             placeholder="Add a todo"
             className="todo-input"
-            value={this.state.value}
+            value={this.props.value}
             onChange={this.inputValue}
           />
 
@@ -97,15 +92,31 @@ class TodoForm extends React.Component {
         {isLoggedIn ? (
           <div>Loading...</div>
         ) : (
-          <ListItems items={this.state.items} delete={this.deleteItem} />
+          <ListItems delete={this.deleteItem} />
         )}
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  addTodo: (value) => dispatch(addTodo(value)),
-  deleteTodo: (key) => dispatch(deleteTodo(key)),
-});
-export default connect(null, mapDispatchToProps)(TodoForm);
+function mapDispatchToProps(dispatch) {
+  return {
+    addTodo: (value) => dispatch(addTodo(value)),
+    inputvalue: (value) => dispatch(inputvalue(value)),
+    deleteTodo: (key) => dispatch(deleteTodo(key)),
+    Firestore_data: (todos) => dispatch(Firestore_data(todos)),
+  };
+}
+
+const mapStateToProps = (state) => {
+  //console.log("CONSOLE", state);
+  const { value, id, todos, isloading } = state.todo;
+  return {
+    value,
+    id,
+    todos,
+    isloading,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoForm);
