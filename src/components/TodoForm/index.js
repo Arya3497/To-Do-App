@@ -69,9 +69,9 @@ class TodoForm extends React.Component {
     const filteredItem = this.state.items.filter(function (item) {
       return item !== itemTobeDeleted;
     });
-    this.setState({
-      items: filteredItem,
-    });
+    // this.setState({
+    //   items: filteredItem,
+    // });
     this.props.deleteTodo(filteredItem);
   }
 
