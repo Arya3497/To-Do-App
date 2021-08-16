@@ -25,10 +25,12 @@ class TodoForm extends React.Component {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          temp.push(doc.data().name);
+          temp.push({
+            todo: doc.data().name, //id: doc.data().id
+          });
         });
+        this.props.Firestore_data(temp);
       });
-    this.props.Firestore_data(temp);
   }
 
   inputValue(e) {
@@ -38,27 +40,20 @@ class TodoForm extends React.Component {
   adTodo(value) {
     const db = firebase.firestore();
     db.collection("todo").add({
-      ID: this.props.id + 1,
       name: value,
     });
   }
 
   onSubmit(e) {
     e.preventDefault();
-    //console.log("item", this.props.value);
     this.adTodo(this.props.value);
     this.props.addTodo(this.props.value);
   }
 
   deleteItem(itemTobeDeleted) {
-    console.log("call", itemTobeDeleted);
-    const filteredItem = this.props.todos.filter(function (item) {
-      return item.todo !== itemTobeDeleted;
+    const filteredItem = this.props.todos.filter((item) => {
+      return item.todo !== itemTobeDeleted.todo;
     });
-    // this.setState({
-    //   items: filteredItem,
-    // });
-    console.log("dhkhsdkhksdk", filteredItem);
     this.props.deleteTodo(filteredItem);
   }
 
@@ -109,7 +104,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = (state) => {
-  //console.log("CONSOLE", state);
   const { value, id, todos, isloading } = state.todo;
   return {
     value,

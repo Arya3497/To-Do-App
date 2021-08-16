@@ -1,5 +1,3 @@
-import firebase from "../../Firebase/firebase_config";
-
 const iniState = {
   value: "",
   id: 0,
@@ -8,22 +6,15 @@ const iniState = {
 };
 
 export const todo = (state = iniState, action) => {
-  console.log(state);
+  // console.log(state);
   switch (action.type) {
     case "ADD_TODO":
-      //stodos:(...)
       const todosList = [...state.todos];
-
-      // const db = firebase.firestore();
-      // db.collection("todo").add({
-      //   ID: state.id + 1,
-      //   name: action.payload,
-      // });
-
       todosList.push({
         todo: action.payload,
+        //ID: state.id + 1,
       });
-      console.log("list", todosList);
+
       return {
         ...state,
         todos: todosList,
@@ -36,20 +27,17 @@ export const todo = (state = iniState, action) => {
         ...state,
         value: action.payload,
       };
+
     case "DELETE_TODO":
       return { ...state, todos: action.payload };
 
     case "FETCH":
-      const array1 = { ...action.payload };
-      console.log("array123", JSON.stringify(action.payload));
-      console.log("state", state);
       return {
         ...state,
-        todos: array1,
+        todos: [...state.todos, ...action.payload],
         isloading: false,
       };
     default:
-      console.log("state", state);
       return state;
   }
 };
