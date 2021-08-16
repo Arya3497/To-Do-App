@@ -1,53 +1,45 @@
 import React from "react";
-//import ListItems from "./ListItems";
 import ListItems from "../ListItems";
+import { connect } from "react-redux";
+import {
+  addTodo,
+  deleteTodo,
+  inputvalue,
+} from "../../redux/action/action_todo";
 
 class TodoForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: "",
-      items: [],
-      id: 0,
-    };
 
     this.inputValue = this.inputValue.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
-
-    // this.
   }
 
   inputValue(e) {
-    this.setState({ value: e.target.value });
+    this.props.inputvalue(e.target.value);
   }
 
   onSubmit(e) {
     e.preventDefault();
-    if (!this.state.value) {
-      alert("Input Field cannot be empty!!!");
-    } else {
-      this.setState({
-        value: "",
-        id: this.state.id + 1,
-        items: [...this.state.items, this.state.value],
-      });
-    }
+    //console.log("item", this.props.value);
+    this.props.addTodo(this.props.value);
   }
 
   deleteItem(itemTobeDeleted) {
-    console.log("call");
-    const filteredItem = this.state.items.filter((item) => {
-      return item !== itemTobeDeleted;
+    //console.log("call");
+    const filteredItem = this.props.todos.filter((item) => {
+      return item.todo !== itemTobeDeleted.todo;
     });
-    this.setState({
-      items: filteredItem,
-    });
+    //console.log("item", this.props.todos);
+    this.props.deleteTodo(filteredItem);
   }
 
   render() {
-    //console.log(this.deleteItem);
+    //console.log("Props", this.props);
     //console.log(this.state.items);
+    const { value, id, todos, onSubmit, deleteItem, inputValue } = this.props;
+
     return (
       <div>
         <form className="todo-form" onSubmit={this.onSubmit}>
@@ -56,17 +48,35 @@ class TodoForm extends React.Component {
             type="text"
             placeholder="Add a todo"
             className="todo-input"
-            value={this.state.value}
+            value={this.props.value}
             onChange={this.inputValue}
           />
 
           <button className="todo-button">Add Todo</button>
         </form>
 
-        <ListItems items={this.state.items} delete={this.deleteItem} />
+        <ListItems delete={this.deleteItem} />
       </div>
     );
   }
 }
 
-export default TodoForm;
+function mapDispatchToProps(dispatch) {
+  return {
+    addTodo: (value) => dispatch(addTodo(value)),
+    inputvalue: (value) => dispatch(inputvalue(value)),
+    deleteTodo: (key) => dispatch(deleteTodo(key)),
+  };
+}
+
+const mapStateToProps = (state) => {
+  //console.log("CONSOLE", state);
+  const { value, id, todos } = state.todo;
+  return {
+    value,
+    id,
+    todos,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoForm);
